@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.8.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.8.0/addons/p5.sound.min.js"></script>
+    <title>TGGrace</title>
+</head>
+<body>
+    <div class="container">
+        <div style="display:flex; height:40px; flex-grow:1;">
+            <div class="slash" style="height:40px"></div>
+            <div class="slash" style="height:40px"></div>
+            <div class="slashtitle">Simulations</div>
+        </div>
+        <div style="display:flex; margin-top:10pt; flex-grow:1;">
+            <div id="simWindow"></div>
+            <div style="display:flex;flex-direction:column; flex:1; justify-content: start;">
+                <div style="display:flex; height:30px; margin-left:5pt;">
+                    <div class="slash" style="height:30px"></div>
+                    <div class="slash" style="height:30px"></div>
+                    <div class="slashtitle" style="height:26px; font-size:22px;">Approximating Pi</div>
+                </div>
+                <div style="display:flex; flex-direction: row; justify-content: space-between; min-width: fit-content;">
+                    <div id="displayInCount"></div>
+                    <div id="displayTotalCount"></div>
+                    <div></div>
+                </div>
+                <div id="displayProp"></div>
+                <div id="displayPi"></div>
+                <button id="playPause"></button>
+                <button id="reset"></button>
+            </div>
+        </div>
+        
+    </div>
+</body>
+<script src="scripts/piScript.js"></script>
+</html>

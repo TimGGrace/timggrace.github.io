@@ -1,0 +1,54 @@
+:root {
+    --main-purple: rgb(68,38,68);
+}
+body {
+    background-color: lightgray;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display:flex;
+    justify-content: center;
+    padding:0 100px;
+}
+
+.container {
+    display:block;
+    flex-grow:1;
+    border: var(--main-purple) 1.5pt solid;
+    border-radius:10pt;
+    min-width:fit-content;
+    padding:10pt;
+    box-shadow: 5px 5px 5px gray;
+}
+
+.slash {
+    transform: skew(-20deg);
+    aspect-ratio: 0.3;
+    flex-grow:0;
+    margin-right:.4vh;
+    background-color:var(--main-purple);
+    height: 1.1em;
+}
+
+.slashtitle {
+    border-bottom:var(--main-purple) 4px solid; 
+    margin-left:-12px; 
+    padding-left: 14px;
+    align-self:flex-start; 
+    font-size:32px;
+    flex-grow:1;
+    height:36px;
+    min-width: max-content;
+}
+
+canvas {
+    display: block;
+    justify-self: center;
+}
+
+button {
+    background-color: var(--main-purple);
+    border-radius: 1vh;
+    border:none;
+    margin:2pt;
+    color:antiquewhite;
+    max-width:200px;
+}
