@@ -80,8 +80,16 @@ function addPoint() {
 }
 
 function playPause() {
-    if (simRunning) noLoop();
-    else loop();
+    let playPauseButton = select("#playPause");
+
+    if (simRunning) {
+        noLoop();
+        playPauseButton.html("Resume Sim");
+    }
+    else {
+        loop();
+        playPauseButton.html("Pause Sim");
+    }
 
     simRunning = !simRunning;
 }
