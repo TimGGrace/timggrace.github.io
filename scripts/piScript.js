@@ -4,10 +4,14 @@ let inCount = 0;
 let totalCount = 0;
 let simRunning = true;
 let canvas;
+let outputGraph;
+
 function setup() {
     let simWindow = select("#simWindow");
     let playPauseButton = select("#playPause");
     let resetButton = select("#reset");
+    
+    setupChartArea();
 
     canvas = createCanvas(winWidth, winHeight);
     simWindow.child(canvas);
@@ -46,6 +50,11 @@ function updateDisplay() {
     let piApprox = prop * 4;
     propDiv.html("Proportion: "+prop.toFixed(15));
     piDiv.html("Pi Approximation: "+piApprox.toFixed(15));
+
+    outputGraph.data.labels.push(totalCount);
+    outputGraph.data.datasets[0].data.push({x:totalCount, y:Math.PI});
+    outputGraph.data.datasets[1].data.push({x:totalCount, y:piApprox});
+    outputGraph.update();
 }
 
 function resetSim() {
@@ -92,4 +101,60 @@ function playPause() {
     }
 
     simRunning = !simRunning;
+}
+
+function setupChartArea() {    
+    let ctx = document.getElementById('errorOutput').getContext('2d');
+
+    outputGraph = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: [0],
+            datasets: [
+                {
+                    data: [{x:0, y:Math.PI}],
+                    fill: false,
+                    pointRadius:0,
+                },
+                {
+                    data: [{x:0, y: 0}],
+                    fill: false,
+                    tension: 0.4,
+                    cubicInterpolationMode: 'monotone',
+                    pointRadius:0,
+                }
+            ]
+        },
+        options: {
+            animation: {
+                duration: 0
+            },
+            plugins:{legend: {
+                display: false
+            }},
+            scales: {
+                y: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Estimated Value'
+                    },
+                    max: 4,
+                    min: 0
+                },
+                x: {
+                    display: true,
+                    title: {
+                        display: true,
+                        text: 'Number of Points'
+                    },
+                    min: 0,
+                    suggestedMax: 1000
+
+                }
+            },
+        }
+    });
+
+    outputGraph.render();
 }
