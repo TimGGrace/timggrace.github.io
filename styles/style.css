@@ -1,22 +1,22 @@
 :root {
     --main-purple: rgb(68,38,68);
+    --pastel-purple: rgb(200,180,200);
 }
 body {
     background-color: lightgray;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    display:flex;
-    justify-content: center;
     padding:0 100px;
 }
 
 .container {
     display:block;
     flex-grow:1;
-    border: var(--main-purple) 1.5pt solid;
+    background-color: var(--pastel-purple);
     border-radius:10pt;
     min-width:fit-content;
     padding:10pt;
     box-shadow: 5px 5px 5px gray;
+    margin-bottom:10px;
 }
 
 .slash {

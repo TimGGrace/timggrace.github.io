@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.8.0/p5.js"></script> <!-- P5 Canvas JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.8.0/addons/p5.sound.min.js"></script> <!-- P5 Sounds -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script> <!-- Chart JS -->
+    <title>TGGrace</title>
+</head>
+<body style="background-color:rgb(200,180,200); padding:0;">
+    <div style="display:flex;flex-direction:column; flex:1; justify-content: start;">
+        <div style="display:flex; height:30px; margin-left:5pt;">
+            <div class="slash" style="height:30px"></div>
+            <div class="slash" style="height:30px"></div>
+            <div class="slashtitle" style="height:26px; font-size:22px;">Bang Bang Controller</div>
+        </div>
+    </div>
+    <div style="display:flex; margin-top:10pt; flex-grow:1;">
+        <div>
+            <div id="bangBangSimWindow"></div>
+            <div style="display:flex;">
+                <button id="bangBangPlayPause" style="display: flex; flex-grow: 1;"></button>
+                <button id="bangBangReset" style="display: flex; flex-grow: 1;"></button>
+            </div>
+            <div style="display:flex;">
+                <input type="range" id="T_min" min="12" max="22" value = "20" step = "0.01" style="flex-grow:1;" />
+                <input type="range" id="T_max" min="22" max="30" value = "25" step="0.01" style="flex-grow:1;" />
+            </div>
+            <div style="display:flex;">
+                <div style="text-align:center; flex-grow:1;">T_min</div>
+                <div style="text-align:center; flex-grow:1;">T_max</div>
+            </div>
+        </div>
+        <canvas id="bangBangGraph" style="max-height:100%; min-width:200px; max-width: 100%;"></canvas>
+    </div>
+    <script src="../scripts/tempSimScript.js"></script>
+</body>
