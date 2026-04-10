@@ -168,7 +168,8 @@ function updateSliderValues() {
 }
 
 function nudgeSim() {
-    currentVal = random(10,40);
+    
+    currentVal = random(5,40);
 }
 
 function resetSim() {
@@ -210,7 +211,7 @@ class PIDController {
         
         //D
         let diffError = (this.previousError - newError) / dt;
-        this.output -= this.coeffs["D"] * diffError;
+        this.output += this.coeffs["D"] * diffError;
 
         //Update internal values
         this.previousError = newError;
