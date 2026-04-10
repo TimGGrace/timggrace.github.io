@@ -4,7 +4,7 @@ let canvas;
 let outputGraph;
 
 
-const k_Power = 100;
+const k_Power = 20;
 const k_loss = 0.02;
 const min_tick = 0.05;
 
@@ -210,7 +210,7 @@ class PIDController {
         
         //D
         let diffError = (this.previousError - newError) / dt;
-        this.output += this.coeffs["D"] * diffError;
+        this.output -= this.coeffs["D"] * diffError;
 
         //Update internal values
         this.previousError = newError;
@@ -222,14 +222,15 @@ class PIDController {
         //     +"PID: [P: "+this.coeffs["P"]+", I:"+this.coeffs["I"]+", D:"+this.coeffs["D"]+"]\n"
         //     +"TDiff: "+dt+", Response: "+this.#Sigmoid(this.output));
 
-        return this.#Sigmoid(this.output);
+        return this.output;
+        //return this.#Sigmoid(this.output);
 
         
     }
 
     //Maps to +/- 1
     #Sigmoid(val) {
-        return Math.atan(val*2) * 2 / Math.PI;
+        return Math.atan(val) * 2 / Math.PI;
     }
 }
 function degToRad(degrees) {return degrees * (Math.PI / 180);}
