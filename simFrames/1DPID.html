@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../styles/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.8.0/p5.js"></script> <!-- P5 Canvas JS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script> <!-- Chart JS -->
+    <title>TGGrace - 1D PID Sim</title>
+</head>
+<body style="background-color:rgb(200,180,200); padding:0;">
+    <div style="display:flex;flex-direction:column; flex:1; justify-content: start;">
+        <div style="display:flex; height:30px; margin-left:5pt;">
+            <div class="slash" style="height:30px"></div>
+            <div class="slash" style="height:30px"></div>
+            <div class="slashtitle" style="height:26px; font-size:22px;">1D PID Controller</div>
+        </div>
+    </div>
+    <div style="display:flex; margin-top:10pt; flex-grow:1;">
+        <div>
+            <div id="PIDSimWindow"></div>
+            <div style="display:flex;">
+                <button id="PIDNudge" style="display: flex; flex-grow: 1;"></button>
+                <button id="PIDReset" style="display: flex; flex-grow: 1;"></button>
+            </div>
+            <div style="display: flex; justify-content:flex-end;">
+                <div>Target:</div>
+                <input type="range" id="Target" min="10" max="40" value = "25" step = "0.1" style="width:150px;" />
+            </div>
+            <div style="display: flex; justify-content: flex-end;">
+                <div>K_p: 0</div>
+                <input type="range" id="K_p" min="0" max="10" value = "2" step = "0.01" style="width:130px;" />
+                <div style="width:20px">10</div>
+            </div>
+            <div style="display: flex; justify-content: flex-end;">
+                <div>K_i: 0</div>
+                <input type="range" id="K_i" min="0" max="10" value = "0" step = "0.01" style="width:130px;" />
+                <div style="width:20px">10</div>
+            </div>
+            <div style="display: flex; justify-content: flex-end;">
+                <div>K_d: 0</div>
+                <input type="range" id="K_d" min="0" max="10" value = "0" step = "0.01" style="width:130px;" />
+                <div style="width:20px">10</div>
+            </div>
+        </div>
+        <canvas id="PIDGraph" style="max-height:100%; min-width:200px; max-width: 100%;"></canvas>
+    </div>
+    <script src="../scripts/1DPIDScript.js"></script>
+</body>

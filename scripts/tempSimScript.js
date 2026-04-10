@@ -68,7 +68,7 @@ function draw() {
 
 function drawOnOffButton() {
     canvas.clear();
-    canvas.background(200);
+    canvas.background(200,180,200);
     
     canvas.stroke(0);
     canvas.strokeWeight(1);

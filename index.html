@@ -4,15 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles/style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.8.0/p5.js"></script> <!-- P5 Canvas JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.8.0/addons/p5.sound.min.js"></script> <!-- P5 Sounds -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script> <!-- Chart JS -->
     <title>TGGrace</title>
 </head>
 <body>
     <div class="container">
         <button id="piSim" onClick="document.getElementById('simFrame').src = 'simFrames/piSim.html'">Pi Sim</button>
         <button id="bangBangSim" onClick="document.getElementById('simFrame').src = 'simFrames/bangBang.html'">BangBang Sim</button>
+        <button id="1DPIDSim" onClick="document.getElementById('simFrame').src = 'simFrames/1DPID.html'">1D PID Sim</button>
     </div>
     <div class="container">
         <iframe id="simFrame" src="simFrames/piSim.html" frameBorder="0" style="width:100%; height:450px"></iframe>
