@@ -3,29 +3,25 @@ let winHeight = 250;
 let canvas;
 let outputGraph;
 
-
-const k_Power = 20;
-const k_loss = 0.02;
 const min_tick = 0.05;
 
 let PID;
 let dialDisplay;
-let target;
-let currentVal;
+let simMass;
+let simTarget;
 let lastTimeStamp;
 let time_since_update;
-let T_ambient;
 let init_time;
 
 function setup() {
-    T_ambient = 12;
     time_since_update = 0;
-    
     lastTimeStamp = Date.now();
-    init_time = Date.now();
-    currentVal = 10;
+    init_time = lastTimeStamp;
+    
     PID = new PIDController();
     updateSliderValues();
+    simMass = new massSystem();
+    simTarget = 0;
 
     setupChartArea();
 
@@ -39,36 +35,34 @@ function setup() {
     canvas.textSize(40);
     dialDisplay = new Dial(canvas);
 
-
-    resetButton.html("Reset Sim");
     resetButton.mousePressed(resetSim);
-    nudgeButton.html("Nudge Sim");
     nudgeButton.mousePressed(nudgeSim);
 }
 
 function draw() {
+    // Update time
     let currTimeStamp = Date.now();
-    let dt = currTimeStamp - lastTimeStamp;
-    time_since_update += dt / 1000;
+    let dt = currTimeStamp - lastTimeStamp; // time in ms for THIS frame
+    let frameDt = dt / 1000;                // time in seconds for THIS frame
+    time_since_update += frameDt;
 
-    let response = PID.Update(currentVal);
+    updateTarget(time_since_update);
+
+    // Pass the actual frame delta time here:
+    let response = PID.Update(simMass.y, simTarget, frameDt);
     dialDisplay.Update(response);
 
-    
-    
-    let dT = (- k_loss * (currentVal - T_ambient) + k_Power * response) * dt/1000;
+    // And here:
+    simMass.Update(response, frameDt);
 
-    currentVal += dT;
     lastTimeStamp = currTimeStamp;
 
-    //Only plot once per tick.
+    // Only plot once per tick.
     if (time_since_update >= min_tick) {
-        addToPlot();
+        addToPlot(dt);
         time_since_update -= min_tick;
     }
-    
 }
-
 
 function setupChartArea() {    
     let ctx = document.getElementById('PIDGraph').getContext('2d');
@@ -82,7 +76,7 @@ function setupChartArea() {
                     name: "Target",
                     type: "line",
                     showInLegend:false,
-                    data: [{x:0, y:PID.target}],
+                    data: [{x:0, y:simTarget}],
                     fill: false,
                     pointRadius:0,
                     lineDashType: "dash",
@@ -92,7 +86,7 @@ function setupChartArea() {
                     name: "Current Value",
                     type: "line",
                     showInLegend:false,
-                    data: [{x:0, y:currentVal}],
+                    data: [{x:0, y:simMass.y}],
                     fill: false,
                     pointRadius:0,
                     lineDashType: "dash",
@@ -114,10 +108,10 @@ function setupChartArea() {
                     display: true,
                     title: {
                         display: true,
-                        text: 'Temperature (°C)'
+                        text: 'Height (m)'
                     },
-                    suggestedMax: 45,
-                    min: 0
+                    suggestedMax: 1,
+                    suggestedMin: -1
                 },
                 x: {
                     display: true,
@@ -140,16 +134,16 @@ function setupChartArea() {
     outputGraph.render();
 }
 
-function addToPlot() {
-    let new_time = lastTimeStamp - init_time;
+function addToPlot(delta_t) {
+    let new_time = lastTimeStamp + delta_t;
+    let time_in_seconds = new_time/1000;
+    outputGraph.data.labels.push(time_in_seconds);
 
-    outputGraph.data.labels.push(new_time);
+    outputGraph.data.datasets[0].data.push({x:time_in_seconds, y:simTarget});
 
-    outputGraph.data.datasets[0].data.push({x:new_time/1000, y:PID.target});
+    outputGraph.data.datasets[1].data.push({x:time_in_seconds, y:simMass.y});
 
-    outputGraph.data.datasets[1].data.push({x:new_time/1000, y:currentVal});
-
-    while (new_time - outputGraph.data.labels[0] > 5000) {
+    while (time_in_seconds - outputGraph.data.labels[0] > 10) {
         outputGraph.data.labels.shift();
         outputGraph.data.datasets[0].data.shift();
         outputGraph.data.datasets[1].data.shift();
@@ -160,81 +154,107 @@ function addToPlot() {
 
 
 function updateSliderValues() {
-    PID.coeffs["P"] = document.getElementById("K_p").value;
-    PID.coeffs["I"] = document.getElementById("K_i").value;
-    PID.coeffs["D"] = document.getElementById("K_d").value;
-    PID.target = document.getElementById("Target").value;
-    target = PID.target;
+    PID.coeffs["P"] = parseFloat(document.getElementById("K_p").value);
+    PID.coeffs["I"] = parseFloat(document.getElementById("K_i").value);
+    PID.coeffs["D"] = parseFloat(document.getElementById("K_d").value);
+}
+
+function updateTarget(time_since_update) {
+    let new_time = lastTimeStamp + time_since_update;
+    let time_bounded = (new_time - init_time) % 10000;
+
+    if (time_bounded < 2000) {
+        simTarget = time_bounded / 4000;
+    } else if (time_bounded < 4000){
+        simTarget = 0.5;
+    } else if (time_bounded < 5000){
+        simTarget = 0.5 - 0.001 * (time_bounded - 4000);
+    } else if (time_bounded < 7000){
+        simTarget = -0.5;
+    } else if (time_bounded < 8200 && time_bounded > 8000) {
+        simTarget = (3 / 2000) * (time_bounded - 8000);
+    } else if (time_bounded < 8400 && time_bounded > 8200) {
+        simTarget = -(3 / 2000) * (time_bounded - 8400);
+    } else {
+        simTarget = 0;
+    }
+    
 }
 
 function nudgeSim() {
-    
-    currentVal = random(5,40);
+    simMas.y += Math.sign(random() - 0.5) * 0.5;
 }
 
+
 function resetSim() {
+    simMass = new massSystem();
     time_since_update = 0;
     lastTimeStamp = Date.now();
     init_time = lastTimeStamp;
-    currentVal = 10;
     PID = new PIDController();
     updateSliderValues();
+    simTarget = updateTarget(0);
 
     outputGraph.data.labels = [0];
-    outputGraph.data.datasets[0].data = [{x:0, y:PID.target}];
-    outputGraph.data.datasets[1].data = [{x:0, y:currentVal}];
+    outputGraph.data.datasets[0].data = [{x:0, y:simTarget}];
+    outputGraph.data.datasets[1].data = [{x:0, y:simMass.y}];
     outputGraph.update();
 }
 
 class PIDController {
-    
+    maxOutput = 200;
+    coeffs = {"P":0, "I": 0, "D": 0};
     constructor() {
-        this.coeffs = {"P":0, "I": 0, "D": 0};
         this.integralError = 0;
         this.previousError = 0;
-        this.target = 0;
+        this.previousPos = 0; // 1. Track the last position
         this.output = 0;
-        this.currTime = Date.now();
     }
 
-    Update(currentVal){
-        let now = Date.now();
-        let dt = (now - this.currTime) / 1000; // In seconds
-
-        // P
-        let newError =  this.target - currentVal;
+    Update(currentVal, target, dt) {
+        let newError =  currentVal - target;
+        
+        // P:
         this.output = this.coeffs["P"] * newError;
 
-        //I
+        // I:
         this.integralError += newError * dt;
         this.output += this.coeffs["I"] * this.integralError;
         
-        //D
-        let diffError = (this.previousError - newError) / dt;
-        this.output += this.coeffs["D"] * diffError;
+        // D:
+        let diffCurrentVal = (currentVal - this.previousPos) / dt;
+        this.output += this.coeffs["D"] * diffCurrentVal;
 
-        //Update internal values
         this.previousError = newError;
-        this.currTime = now;
-        
-        // console.log("PID Values: \n"
-        //     +"Curr: "+currentVal+"\n"
-        //     +"Err: "+this.previousError+"\n"
-        //     +"PID: [P: "+this.coeffs["P"]+", I:"+this.coeffs["I"]+", D:"+this.coeffs["D"]+"]\n"
-        //     +"TDiff: "+dt+", Response: "+this.#Sigmoid(this.output));
+        this.previousPos = currentVal;
 
         return this.output;
         //return this.#Sigmoid(this.output);
-
-        
     }
 
-    //Maps to +/- 1
+    // Maps to +/- maxOutput, aligning with y=x at 0.
     #Sigmoid(val) {
-        return Math.atan(val) * 2 / Math.PI;
+        return Math.atan(val * Math.PI / (2 * this.maxOutput)) * 2 * this.maxOutput / Math.PI;
     }
 }
 function degToRad(degrees) {return degrees * (Math.PI / 180);}
+
+class massSystem {
+    m = 5;
+    k_s = 250;
+    y = 0;
+    curr_v = 0;
+    
+    Update(Thrust, delta_t) {
+        
+        let F = - Thrust - this.k_s * this.y + this.m * 9.81;
+        let a = F / this.m;
+
+        this.curr_v += a * delta_t;
+
+        this.y += this.curr_v * delta_t;
+    }
+}
 
 class Dial {
     constructor(canvas) {
@@ -255,13 +275,13 @@ class Dial {
         
         this.canvas.ellipse(this.x,this.y, this.diameter);
 
-        this.angle = 90 * (1 - position);
+        this.angle = 90 * (1 - position/2);
 
         this.canvas.line(
             this.x,
             this.y,
-            this.x + this.radius * Math.sin(degToRad(this.angle)),
-            this.y + this.radius * Math.cos(degToRad(this.angle))
+            this.x + 0.5*this.diameter * Math.sin(degToRad(this.angle)),
+            this.y + 0.5*this.diameter * Math.cos(degToRad(this.angle))
         );
         
         let powerPercentage = Math.round(position * 10)/10;

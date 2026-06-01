@@ -20,8 +20,8 @@
         <div>
             <div id="PIDSimWindow"></div>
             <div style="display:flex;">
-                <button id="PIDNudge" style="display: flex; flex-grow: 1;"></button>
-                <button id="PIDReset" style="display: flex; flex-grow: 1;"></button>
+                <button id="PIDNudge" style="display: flex; flex-grow: 1;">Nudge</button>
+                <button id="PIDReset" style="display: flex; flex-grow: 1;">Reset Sim</button>
             </div>
             <div style="display: flex; justify-content:flex-end;">
                 <div>Target:</div>
@@ -29,18 +29,18 @@
             </div>
             <div style="display: flex; justify-content: flex-end;">
                 <div>K_p: 0</div>
-                <input type="range" id="K_p" min="0" max="10" value = "5.5" step = "0.01" style="width:130px;" />
-                <div style="width:20px">10</div>
+                <input type="range" id="K_p" min="0" max="1000" value = "500" step = "1" style="width:130px;" />
+                <div style="width:20px">1000</div>
             </div>
             <div style="display: flex; justify-content: flex-end;">
                 <div>K_i: 0</div>
-                <input type="range" id="K_i" min="0" max="10" value = "0" step = "0.01" style="width:130px;" />
-                <div style="width:20px">10</div>
+                <input type="range" id="K_i" min="0" max="5" value = "0.5" step = "0.01" style="width:130px;" />
+                <div style="width:20px">5</div>
             </div>
             <div style="display: flex; justify-content: flex-end;">
                 <div>K_d: 0</div>
-                <input type="range" id="K_d" min="0" max="0.1" value = "0.04" step = "0.01" style="width:130px;" />
-                <div style="width:20px">0.1</div>
+                <input type="range" id="K_d" min="0" max="50" value = "15" step = "0.01" style="width:130px;" />
+                <div style="width:20px">50</div>
             </div>
         </div>
         <canvas id="PIDGraph" style="max-height:100%; min-width:200px; max-width: 100%;"></canvas>
